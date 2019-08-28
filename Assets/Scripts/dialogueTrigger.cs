@@ -13,9 +13,9 @@ public class dialogueTrigger : MonoBehaviour
 	[SerializeField] Transform[] chaters = null;
 	[SerializeField] Vector3[] offSets = null;
 
-	public void TriggerChat(){
+	public void TriggerChat(GameObject player = null){
 		int[] order = chat.GetOrder();
 		string[] log = chat.GetChat();
-		manager.StartChat(order, log, chaters, offSets);
+		manager.StartChat(order, log, chaters, offSets, player);
 	}
 }
