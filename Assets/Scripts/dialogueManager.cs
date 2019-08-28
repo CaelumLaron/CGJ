@@ -1,45 +1,58 @@
-﻿using System.Collections;
+﻿/*Created by CaelumLaron*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class dialogueManager : MonoBehaviour
 {
-	[Header ("Dialogue Box")]
-	[SerializeField] Text nameText = null;
-	[SerializeField] Text dialogueText = null;
+    [SerializeField] Text textField = null;
+    [SerializeField] Canvas canvas;
 
 	//Data structure
-	Queue<string> sentences;
+    Queue<int> orderQ;
+	Queue<string> sentencesQ;
+    Transform[] pos;
+    Vector3[] offSetPos;
     
     void Start(){
-    	sentences = new Queue<string>();    
+        orderQ = new Queue<int>();
+    	sentencesQ = new Queue<string>();    
     }
 
-    public void StartDialogue(dialogue Dialogue){
-    	nameText.text = Dialogue.GetName();
-    	sentences.Clear();
-    	string[] dSentences = Dialogue.GetSentences();
-    	foreach(string sentence in dSentences)
-    		sentences.Enqueue(sentence);
-    	DisplayNextSentence();
+    public void StartChat(int[] order, string[] chat, Transform[] chater, Vector3[] offSet){
+        for(int i=0; i<order.Length; ++i){
+            orderQ.Enqueue(order[i]);
+            sentencesQ.Enqueue(chat[i]);
+        }
+        pos = chater;
+        offSetPos = offSet;
+        DisplayNextSentence();
     }
 
     public void DisplayNextSentence(){
-    	if(sentences.Count == 0){
+    	if(sentencesQ.Count == 0){
     		EndDialogue();
     		return;
     	}
-    	string sentence = sentences.Dequeue();
-    	StartCoroutine(TypeSentence(sentence));
+        int index  = orderQ.Dequeue();
+    	string sentence = sentencesQ.Dequeue();
+    	StartCoroutine(TypeSentence(index, sentence));
     }
 
-    IEnumerator TypeSentence(string sentence){
-    	dialogueText.text = "";
+    IEnumerator TypeSentence(int index, string sentence){
+    	Vector3 wantedPos = pos[index].position + offSetPos[index];
+        Text dialogueText = Instantiate(textField) as Text;
+        dialogueText.transform.SetParent(canvas.transform);
+        dialogueText.transform.position = Camera.main.WorldToScreenPoint(wantedPos);
+        dialogueText.text = "";
     	foreach(char letter in sentence.ToCharArray()){
     		dialogueText.text += letter;
     		yield return null; 
     	}
+        yield return new WaitForSeconds(1);
+        Destroy(dialogueText.transform.gameObject);
     }
 
     private void EndDialogue(){

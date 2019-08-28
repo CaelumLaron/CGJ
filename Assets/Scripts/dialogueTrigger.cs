@@ -1,13 +1,21 @@
-﻿using System.Collections;
+﻿/*Created by CaelumLaron*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class dialogueTrigger : MonoBehaviour
 {
-	//Dialogue
-	[SerializeField] dialogue Dialogue = null;
+	[Header ("Dialogue")]
+	[SerializeField] dialogueManager manager;
+	[SerializeField] dialogueData chat = null;
+	[SerializeField] Transform[] chaters = null;
+	[SerializeField] Vector3[] offSets = null;
 
-	public void TriggerDialogue(){
-		Object.FindObjectOfType<dialogueManager>().StartDialogue(Dialogue);
+	public void TriggerChat(){
+		int[] order = chat.GetOrder();
+		string[] log = chat.GetChat();
+		manager.StartChat(order, log, chaters, offSets);
 	}
 }
