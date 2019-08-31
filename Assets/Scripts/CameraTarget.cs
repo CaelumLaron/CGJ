@@ -23,6 +23,9 @@ public class CameraTarget : MonoBehaviour
 	public bool LockY;
 	public bool LockZ;
 
+	[SerializeField] private Vector3 _minValues;
+	[SerializeField] private Vector3 _maxValues;
+
 	private void Update()
 	{
 #if UNITY_EDITOR
@@ -32,9 +35,9 @@ public class CameraTarget : MonoBehaviour
 
 		this.transform.position =
 			new Vector3(
-				this.LockX ? this.transform.position.x : this.Target.position.x,
-				this.LockY ? this.transform.position.y : this.Target.position.y,
-				this.LockZ ? this.transform.position.z : this.Target.position.z
+				this.LockX ? this.transform.position.x : Mathf.Clamp(this.Target.position.x, this._minValues.x, this._maxValues.x),
+				this.LockY ? this.transform.position.y : Mathf.Clamp(this.Target.position.y, this._minValues.y, this._maxValues.y),
+				this.LockZ ? this.transform.position.z : Mathf.Clamp(this.Target.position.z, this._minValues.z, this._maxValues.z)
 			);
 	}
 

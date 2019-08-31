@@ -14,13 +14,16 @@ using UnityEditor;
 
 using TMPro;
 
-public class Character : MonoBehaviour
+public class Checkpoint : MonoBehaviour
 {
-	public Checkpoint Checkpoint;
-
-	public void Die()
+	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		this.transform.position = this.Checkpoint.transform.position;
+		Character character = collision.GetComponent<Character>();
+
+		if (character != null)
+		{
+			character.Checkpoint = this;
+		}
 	}
 
 #if UNITY_EDITOR
@@ -31,17 +34,17 @@ public class Character : MonoBehaviour
 }
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(Character))]
+[CustomEditor(typeof(Checkpoint))]
 [CanEditMultipleObjects]
-public class CharacterEditor : Editor
+public class CheckpointEditor : Editor
 {
 #pragma warning disable 0219, 414
-	private Character _sCharacter;
+	private Checkpoint _sCheckpoint;
 #pragma warning restore 0219, 414
 
 	private void OnEnable()
 	{
-		this._sCharacter = this.target as Character;
+		this._sCheckpoint = this.target as Checkpoint;
 	}
 
 	public override void OnInspectorGUI()
