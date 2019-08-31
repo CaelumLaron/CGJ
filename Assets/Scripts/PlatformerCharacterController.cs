@@ -34,6 +34,8 @@ public class PlatformerCharacterController : MonoBehaviour
 	[Min(0f)]
 	[SerializeField] private float _movementSpeed = 3f;
 
+	[SerializeField] private Animator _animator;
+
 	private float _tempTimeCached;
 
 	private void Update()
@@ -72,12 +74,18 @@ public class PlatformerCharacterController : MonoBehaviour
 		}
 
 		this._rigidbody2D.velocity = new Vector2(movement.x * this._movementSpeed, this._rigidbody2D.velocity.y);
+
+		this.transform.localScale = new Vector3(Mathf.Abs(movement.x) > 0 ? movement.x : 1f, this.transform.localScale.y, this.transform.localScale.z);
+
+		this._animator.SetFloat("Run", Mathf.Abs(this._rigidbody2D.velocity.x));
+		this._animator.SetFloat("Jump", this._rigidbody2D.velocity.y);
 	}
 
 #if UNITY_EDITOR
 	private void Reset()
 	{
 		this._rigidbody2D = this.GetComponent<Rigidbody2D>();
+		this._animator = this.GetComponent<Animator>();
 	}
 
 	private void OnDrawGizmos()
